@@ -12,8 +12,8 @@ cli := cli
 #     -g : 添加gdb的调试信息    -marm : 编译生成arm指令    -Wall : 显示所有警告    -O0 : 代码优化等级，不优化
 #     -mabi=apcs-gnu : 架构    -mfpu=neon -mfloat-abi=softfp : 浮点数    -fno-builtin : 不使用内建函数
 # 	  -nostdinc : 不适用标准头文件    -I./include : 指定头文件路径	-lsqlite3 : 链接sqlite3库
-SER_CFLAGS += -g -Wall -O0 -I./server/include -lsqlite3
-CLI_CFLAGS += -g -Wall -O0 -I./client/include
+SER_CFLAGS += -I./server/include -I./common/include -lsqlite3
+CLI_CFLAGS += -I./client/include -I./common/include
 
 # 展开目录下所有符合要求的文件名并赋值给变量
 SER_OBJS := $(wildcard server/src/*.c) $(wildcard server/*.c)
@@ -37,10 +37,10 @@ $(ser):$(SER_OBJ)
 client:clscli $(cli)
 $(cli):$(CLI_OBJ)
 	@echo "  LD      $^"
-	@gcc $^ -o $@
+	@gcc $(SER_CFLAGS) $^ -o $@
 %.o:%.c
 	@echo "  CC      $@"
-	@gcc -c $< -o $@
+	@gcc -c $(CLI_CFLAGS) $< -o $@
 
 # 清除所有生成的文件
 clsall:clsser clscli
