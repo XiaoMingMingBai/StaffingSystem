@@ -11,8 +11,8 @@ cli := cli
 # 定义编译程序变量
 #     -g : 添加gdb的调试信息    -marm : 编译生成arm指令    -Wall : 显示所有警告    -O0 : 代码优化等级，不优化
 #     -mabi=apcs-gnu : 架构    -mfpu=neon -mfloat-abi=softfp : 浮点数    -fno-builtin : 不使用内建函数
-# 	  -nostdinc : 不适用标准头文件    -I./include : 指定头文件路径   
-SER_CFLAGS += -g -Wall -O0 -I./server/include
+# 	  -nostdinc : 不适用标准头文件    -I./include : 指定头文件路径	-lsqlite3 : 链接sqlite3库
+SER_CFLAGS += -g -Wall -O0 -I./server/include -lsqlite3
 CLI_CFLAGS += -g -Wall -O0 -I./client/include
 
 # 展开目录下所有符合要求的文件名并赋值给变量
@@ -29,7 +29,7 @@ all:clscli server client
 server:clsser $(ser)
 $(ser):$(SER_OBJ)
 	@echo "  LD      $^"
-	@gcc $^ -o $@
+	@gcc $^ -o $@ -lsqlite3
 %.o:%.c
 	@echo "  CC      $@"
 	@gcc -c $< -o $@
